@@ -1,0 +1,19 @@
+# The Global Kitchen — Ignored Files
+# ==============================
+# Dependencies
+node_modules/
+
+# Environment secrets
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
