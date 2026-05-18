@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Global Kitchen</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="logo"><i class="fa-solid fa-utensils"></i> The Global Kitchen</h1>
+            <button id="addRecipeBtn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Recipe</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Controls: Search & Filter -->
+        <section class="controls">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Search recipes by title...">
+            </div>
+            <div class="filter-box">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="Snack">Snack</option>
+                    <option value="Vegan">Vegan</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                    <option value="Seafood">Seafood</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Recipes Grid -->
+        <section id="recipeGrid" class="recipe-grid">
+            <!-- Recipes will be dynamically injected here -->
+        </section>
+        
+        <!-- Loading Spinner -->
+        <div id="loader" class="loader-container">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="emptyState" class="empty-state hidden">
+            <i class="fa-solid fa-bowl-food empty-icon"></i>
+            <h2>No recipes found</h2>
+            <p>Try adjusting your search or add a new recipe to get started!</p>
+        </div>
+    </main>
+
+    <!-- Recipe Modal (Add / Edit) -->
+    <div id="recipeModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Recipe</h2>
+                <button id="closeModalBtn" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="recipeForm">
+                    <!-- Hidden field for Edit mode -->
+                    <input type="hidden" id="recipeId">
+                    
+                    <div class="form-group">
+                        <label for="title">Title *</label>
+                        <input type="text" id="title" name="title" required minlength="3" maxlength="100" placeholder="e.g., Spicy Thai Basil Chicken">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="category">Category *</label>
+                            <select id="category" name="category" required>
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Dinner">Dinner</option>
+                                <option value="Dessert">Dessert</option>
+                                <option value="Snack">Snack</option>
+                                <option value="Appetizer">Appetizer</option>
+                                <option value="Beverage">Beverage</option>
+                                <option value="Soup">Soup</option>
+                                <option value="Salad">Salad</option>
+                                <option value="Vegan">Vegan</option>
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Seafood">Seafood</option>
+                                <option value="Baking">Baking</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group half">
+                            <label for="difficulty">Difficulty *</label>
+                            <select id="difficulty" name="difficulty" required>
+                                <option value="" disabled selected>Select Difficulty</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                                <option value="Expert">Expert</option>
+                            </select>
+                        </div>
+                        <div class="form-group half">
+                            <label for="cookingTime">Time (mins) *</label>
+                            <input type="number" id="cookingTime" name="cookingTime" required min="1" placeholder="30">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ingredients *</label>
+                        <div id="ingredientsContainer" class="ingredients-list">
+                            <!-- Ingredient Rows go here -->
+                        </div>
+                        <button type="button" id="addIngredientBtn" class="btn btn-outline btn-sm"><i class="fa-solid fa-plus"></i> Add Ingredient</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="instructions">Instructions *</label>
+                        <textarea id="instructions" name="instructions" required minlength="20" rows="5" placeholder="Step 1: Prep the ingredients..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+                <button type="submit" form="recipeForm" class="btn btn-primary" id="saveRecipeBtn">Save Recipe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Recipe Modal -->
+    <div id="viewRecipeModal" class="modal-overlay hidden">
+        <div class="modal view-modal">
+            <div class="modal-header">
+                <h2 id="viewTitle" class="view-title">Recipe Title</h2>
+                <div class="view-actions">
+                    <button id="viewEditBtn" class="btn-icon text-accent"><i class="fa-solid fa-pen"></i></button>
+                    <button id="viewDeleteBtn" class="btn-icon text-danger"><i class="fa-solid fa-trash"></i></button>
+                    <button id="closeViewModalBtn" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="recipe-meta-tags">
+                    <span class="tag" id="viewCategory"><i class="fa-solid fa-tag"></i> Category</span>
+                    <span class="tag" id="viewDifficulty"><i class="fa-solid fa-gauge-high"></i> Difficulty</span>
+                    <span class="tag" id="viewTime"><i class="fa-solid fa-clock"></i> 0 mins</span>
+                </div>
+                
+                <div class="view-section">
+                    <h3>Ingredients</h3>
+                    <ul id="viewIngredients" class="view-ingredients-list">
+                        <!-- Filled by JS -->
+                    </ul>
+                </div>
+
+                <div class="view-section">
+                    <h3>Instructions</h3>
+                    <div id="viewInstructions" class="view-instructions">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <div class="toast-content">
+            <i id="toastIcon" class="fa-solid fa-circle-check"></i>
+            <span id="toastMessage">Success message!</span>
+        </div>
+    </div>
+
+    <!-- Main Logic -->
+    <script src="/js/app.js"></script>
+</body>
+</html>
